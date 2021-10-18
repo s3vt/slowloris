@@ -1,6 +1,7 @@
 package slowloris
 
 import (
+	"fmt"
 	"io"
 	"log"
 	"net/http"
@@ -9,23 +10,34 @@ import (
 var clt *http.Client
 
 func init() {
-	clt = http.DefaultClient
+	transport := &http.Transport{
+		MaxConnsPerHost: 0}
+
+	clt = &http.Client{Transport: transport}
 }
 
-func DoRequest(requestor Requestor) (string, error) {
-	res, err := clt.Do(requestor.CreateRequest())
+func DoRequests(requestor Requestor) (string, error) {
+
+	res, err := performRequest(requestor.CreateRequest())
 	if err != nil {
-		log.Printf("send request failed %v", err)
 		return "", err
 	}
-
-	defer res.Body.Close()
 
 	val, err := io.ReadAll(res.Body)
 	if err != nil {
 		log.Printf("read response failed %v", err)
 		return "", err
 	}
+	defer res.Body.Close()
 
 	return string(val), nil
+}
+
+func performRequest(request *http.Request) (*http.Response, error) {
+	res, err := clt.Do(request)
+	if err != nil {
+		return nil, fmt.Errorf("send request to url %s failed %v", request.URL, err)
+	}
+
+	return res, nil
 }

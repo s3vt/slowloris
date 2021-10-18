@@ -6,8 +6,8 @@ const (
 	Address = Host + ":" + Port
 	Path    = "path"
 
-	BasicAuthUser     = "user"
-	BasicAuthPassword = "password"
+	BasAuthUsr = "user"
+	BasAuthPwd = "password"
 )
 
 type BaseServer struct {

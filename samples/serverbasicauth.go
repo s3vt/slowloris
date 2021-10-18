@@ -6,6 +6,8 @@ import (
 	"io"
 	"log"
 	"net/http"
+
+	"github.com/sapvs/slowloris"
 )
 
 var (
@@ -13,12 +15,12 @@ var (
 )
 
 type BasicAuthRequestor struct {
-	Method, Host, Port, Path, Username, Password string
-	Body                                         io.Reader
+	*slowloris.BaseRequestor
+	Username, Password string
 }
 
 func (requestor *BasicAuthRequestor) CreateRequest() *http.Request {
-	req, err := http.NewRequestWithContext(context.Background(), requestor.Method, fmt.Sprintf("http://%s:%s/%s", requestor.Host, requestor.Port, requestor.Path), requestor.Body)
+	req, err := http.NewRequestWithContext(context.Background(), requestor.Method, requestor.Url(), requestor.Body)
 	if err != nil {
 		log.Fatalf("could not create basic auth request due to %v", err)
 	}

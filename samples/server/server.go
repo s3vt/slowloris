@@ -10,9 +10,12 @@ func main() {
 	bas := &samples.BasicAuthServer{
 		BaseServer: &samples.BaseServer{
 			Address: samples.Address},
-		Username: samples.BasicAuthUser,
-		Password: samples.BasicAuthPassword}
-	ds := &samples.DefaultServer{BaseServer: &samples.BaseServer{Address: "localhost:8080"}}
+		Username: samples.BasAuthUsr,
+		Password: samples.BasAuthPwd}
+
+	ds := &samples.DefaultServer{
+		BaseServer: &samples.BaseServer{
+			Address: "localhost:8080"}}
 
 	log.Fatalf("Server done with %v", startServer(bas))
 	log.Fatalf("Server done with %v", startServer(ds))
